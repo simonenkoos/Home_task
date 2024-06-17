@@ -1,42 +1,39 @@
 #include <iostream>
 #include <vector>
-#include <string>
-#include <map>
-
+#include <algorithm>
+#include <cmath>
 using namespace std;
-
-bool check(int distance, int n, int k, vector<int>& coordinates){
-    int x0 = 0;
-    int count = 1;
-    int i = 0;
-    for(int x=0; x < n; x+coordinates[i]){
-        if(x - x0 >= distance){
-            count++;
-            x0 = x;
-        }
-        else i++;
-    }
-    if(count >= k) return true;
-    return false;
+bool check(int x, int n, vector<vector<double>>& a){
+  double t1 = a[x][2];
+  double t2 = a[n][2] - a[x][2];
+  if(t1 > t2 && t2 + (a[x][0] - a[x-1][0])/(a[x][1]) >= t1) return true;
+  if(t1 + (a[x][0] - a[x-1][0])/(a[x][1]) >= t2) return true;
+  return false;
 }
 
-
 int main(){
-    int n, k;
-    cin >> n >> k;
-    int x;
-    vector<int> coordinates(n);
-    for(int i=0; i<n; i++){
-        cin >> x;
-        coordinates[i] = x;
-    }
-    cout << check(7,n,k,coordinates);
-    int right = coordinates[n-1] - coordinates[0] + 1;
-    int left = 0;
-    while(right - left > 1){
-        int m = (right + left)/2;
-        if(check(m,n,k,coordinates) == true) left = m;
-        else  right = m;
-    }
-    cout << left;
+  int n;
+  cin >> n;
+  vector<vector<double>> a(n+1, vector<double>(3));
+  double x;
+  a[0][0] = 0;
+  a[0][1] = 0;
+  a[0][2] = 0;
+  for(int i = 1; i < n+1; i++){
+    cin >> x;//длина
+    a[i][0] = x + a[i-1][0];
+    cin >> a[i][1];//скорость
+    a[i][2] = a[i-1][2] + a[i][0]/a[i][1];//время
+  }
+  int right = n+1;
+  int left = 1;
+  int middle;
+  cout << check(2,n,a);
+  while(right - left > 1){
+    middle = (right + left)/2;
+    if(check(middle, n, a) == true) left = middle;
+    else  right = middle;
+    //cout << middle << "$ " << right << " "<< left << "% ";
+  }
+  cout << left;
 }
