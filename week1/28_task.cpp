@@ -14,7 +14,6 @@ bool check(int distance, int n, int k, vector<int>& coordinates){
             x0 = coordinates[i];
         }
     }
-    //cout << 1;
     if(count >= k) return true;
     return false;
 }
