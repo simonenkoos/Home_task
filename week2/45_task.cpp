@@ -26,28 +26,33 @@ int gcd(int a, int b){
 ll pow1(ll a, ll b){
   if(!b){
     return 1;
-  } return a*pow1(a, b-1);
+  } 
+  if(b & 1){
+    return a*pow1(a, b-1);
+  } 
+  return pow1(a*a, b >> 1);
 }
 int main(){
   int a, b, gcd1;
   cin >> a >> b;
   gcd1 = gcd(a, b);
-  vector<ll> md, keys, u;
-  for(int i=0; i<gcd1+1; i++){
-    md.push_back(10e10);
-  }md[1] = 1;
-  for(ll i=2; i<gcd1+1; i++){
-    for(ll j = i; j<gcd1+1; j+=i){
-      md[j] = min(md[j], i);
+  vector<ll> keys, u;
+  map<int, int> f;
+  for(int i = 2; i*i<=gcd1; i++){
+    if(gcd1%i == 0){
+      keys.push_back(i);
     }
-  } map<int, int> f;
+    while(gcd1%i == 0){
+      f[i]++;
+      gcd1 /= i;
+    }
+  }
+  if(gcd1 != 1){
+    f[gcd1]++;
+    keys.push_back(gcd1);
+  }
   u.push_back(1);
-  while(gcd1 > 1){
-    f[md[gcd1]]++;
-    if(f[md[gcd1]]==1){
-      keys.push_back(md[gcd1]);
-    }gcd1 /= md[gcd1]; 
-  }sort(keys.begin(), keys.end());
+  sort(keys.begin(), keys.end());
   for(int i=0; i<keys.size(); i++){
     int l = u.size();
     for(int j=0; j<l; j++){
@@ -55,18 +60,18 @@ int main(){
         u.push_back(u[j]*pow1(keys[i],q));
       }
     }
-  } sort(u.begin(),u.end());
+  }
+  sort(u.begin(),u.end());
   u.push_back(10e9+1);
   int n, x, y; 
   cin >> n;
   for(int i=0; i<n; i++){
     cin >> x >> y;
-    int l1 = bin_search(u, x);
     int l2 = bin_search(u, y);
-    if(u[l1+1]>y && u[l1] < x){
-      cout << -1 << '\n';
-    }else{
+    if(u[l2] >= x and u[l2] <= y){
       cout << u[l2] << '\n';
+    }else{
+      cout << -1 << '\n';
     }
   }
 }
