@@ -32,7 +32,7 @@ void bt(int pos, int n, int k){
     point = q;
     a[pos] = 0;
     used ^= (1 << i);
-  }
+    }
 }
  
  
